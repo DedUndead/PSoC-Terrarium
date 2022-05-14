@@ -1,0 +1,12 @@
+C:\University\psoc\psoc_arefyev\arefyevPSOC5DAQ.cydsn\arefyevPSOC5DAQ.cyprj|7d160617-ddf5-4adc-a472-1a2deda61105
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|54e42bd9-affa-41a6-b468-a950d6ca00dd
+C:\Users\botmo\OneDrive\Documents\PSoC Creator\4.4\Downloads ( 4.4).cylib\Downloads ( 4.4).cyprj|7a86cca9-4fbb-4a92-8d51-cffc8e138f96
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|aeef34f0-099e-4ea4-ad72-2c0d1820c33f
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|b9ceef35-2a0b-43da-a883-4435582ef526
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|181bdaa0-caaa-4df0-9e93-a7dc3c27e27f
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\default\CyReferenceLibrary\CyReferenceLibrary.cylib\CyReferenceLibrary.cyprj|eaff77e0-a34b-415d-8a0d-efa454d3a6a6
+C:\University\psoc\psoc_arefyev\arefyevPSOC5DAQ_alternative.cydsn\arefyevPSOC5DAQ_alternative.cyprj|20f90911-17c6-4aec-81fc-45d8aae46947
+C:\University\psoc\psoc_arefyev\arefyevPSOC5Serial.cydsn\arefyevPSOC5Serial.cyprj|13c39f3f-df01-46c2-ae70-bcf8a70a811d
+C:\University\psoc\psoc_arefyev\arefyevPSOC5OneWire.cydsn\arefyevPSOC5OneWire.cyprj|b9e6e6fc-66a7-429e-b342-32592cd67fd9
+C:\University\psoc\psoc_arefyev\arefyev_task5.cydsn\arefyev_task5.cyprj|08115bc3-4a1d-40e5-bdfe-ce7f8bd6933a
+C:\University\psoc\psoc_arefyev\psoc_project.cydsn\psoc_project.cyprj|23c2d4a6-4737-4db1-bd9f-2ac2a117b26e
