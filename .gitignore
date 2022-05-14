@@ -3,4 +3,8 @@ Export/
 CortexM3/
 codegentemp/
 *.log
-psoc_project.*
+*.cycdx
+*.cyprj.*
+*.rpt
+*.svd
+*.html
