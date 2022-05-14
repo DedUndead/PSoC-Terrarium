@@ -1,0 +1,6 @@
+Generated_Sources/
+Export/
+CortexM3/
+codegentemp/
+*.log
+psoc_project.*
