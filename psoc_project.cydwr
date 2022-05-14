@@ -254,6 +254,7 @@
       <Data key="082e299b-b576-4872-b3e5-03a178f62031" value="SCL" />
       <Data key="264be2d3-9481-494b-8d9c-c1905a45e9cc" value="SDA" />
       <Data key="1425177d-0d0e-4468-8bcc-e638e5509a9b" value="PSOC_Rx" />
+      <Data key="e851a3b9-efb8-48be-bbb8-b303b216c393" value="Servo_Motor" />
       <Data key="ed092b9b-d398-4703-be89-cebf998501f6" value="PSOC_Tx" />
     </Group>
   </Group>
@@ -3354,6 +3355,11 @@
     <Group key="1425177d-0d0e-4468-8bcc-e638e5509a9b">
       <Group key="0">
         <Data key="Port Format" value="12,6" />
+      </Group>
+    </Group>
+    <Group key="e851a3b9-efb8-48be-bbb8-b303b216c393">
+      <Group key="0">
+        <Data key="Port Format" value="1,7" />
       </Group>
     </Group>
     <Group key="ed092b9b-d398-4703-be89-cebf998501f6">

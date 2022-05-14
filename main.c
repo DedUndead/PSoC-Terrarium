@@ -23,6 +23,7 @@
 #define TC74_ADDRESS      0x4a     // I2C address of TC74 sensor
 #define TC74_TEMP_REG     0x00     // Temperature register of the sensor
 
+/* Function declarations */
 static int16 read_i2c_data(uint8 slave_address, uint8 register_address);
 
 int main()
@@ -33,6 +34,8 @@ int main()
     /* Start hardware components */
     I2C_Start();
     UART_Start();
+    Clock_1MHz_Start(); 
+    PWM_Start();
 
     /* main Variable block */
     char transmit_buffer[MAX_BUFFER_LENGTH];
@@ -43,6 +46,9 @@ int main()
         sprintf(transmit_buffer, "%d\r\n", sample);
         UART_PutString(transmit_buffer);
         
+        PWM_WriteCompare(1000);
+        CyDelay(1000);
+        PWM_WriteCompare(2000);
         CyDelay(1000);
     }
 }
