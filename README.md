@@ -61,6 +61,8 @@ Some details on 9g related software are provided in respective section.
 
 ### Custom interfaces
 
+## User guide
+
 ##
 
 ### Credit
