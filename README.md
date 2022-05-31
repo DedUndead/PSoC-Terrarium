@@ -2,6 +2,19 @@
 
 Despite terrarium, greenhouse and plant growing automation projects are overhyped, this little development is meant for the exploration of Programmable System on Chip capabilities. As long as my portfolio consists of Embedded projects that inherit classical principles of emb-dev, this work is focused on showing the flexibility of PSoC microcontrollers, which will be described well enough in the documentation below.
 
+#### Table of contents
+
+1. [General description](#general-description)
+2. [List of components](#list-of-components)
+    1. [List of components](#justification-for-components-choice)
+3. [Hardware architecture](#hardware-architecture)
+    1. [Internal hardware architecture](internal-hardware-architecture)
+    2. [External hardware architecture](#external-hardware-architecture)
+4. [Software architecture](#software-architecture)
+    1. [Custom interfaces](#custom-interfaces)
+5. [User guide](#user-guide)
+6. [Credit](#credit)
+
 ## General description
 
 PSoC Terrarium provides a multisensing device solution to track the state of the environment, where the Terrarium system is placed.<br>
