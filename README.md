@@ -51,7 +51,15 @@ DFRobot's soil temperature sensor is an analog plug-and-play solution for measur
 In the current prototype, simple red LED and 9g servo motor are used for demonstration purposes.<br>
 Some details on 9g related software are provided in respective section.
 
-## 
+## Hardware architecture
+
+### Internal hardware architecture
+
+### External hardware architecture
+
+## Software architecture
+
+### Custom interfaces
 
 ### Credit
 
