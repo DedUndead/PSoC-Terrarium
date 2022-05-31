@@ -61,6 +61,8 @@ Some details on 9g related software are provided in respective section.
 
 ### Custom interfaces
 
+##
+
 ### Credit
 
 Prepared for Metropolia University of Applied Science's "Programmable System on Chip Design" course conducted by Antti Piironen, Principal Lecturer in Smart Systems Engineering.
