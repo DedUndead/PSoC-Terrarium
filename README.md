@@ -6,7 +6,7 @@ Despite terrarium, greenhouse and plant growing automation projects are overhype
 
 1. [General description](#general-description)
 2. [List of components](#list-of-components)
-    1. [List of components](#justification-for-components-choice)
+    1. [Justification for components choice](#justification-for-components-choice)
 3. [Hardware architecture](#hardware-architecture)
     1. [Internal hardware architecture](internal-hardware-architecture)
     2. [External hardware architecture](#external-hardware-architecture)
