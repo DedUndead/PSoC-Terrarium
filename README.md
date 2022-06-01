@@ -11,7 +11,9 @@ Despite terrarium, greenhouse and plant growing automation projects are overhype
     1. [Internal hardware architecture](internal-hardware-architecture)
     2. [External hardware architecture](#external-hardware-architecture)
 4. [Software architecture](#software-architecture)
-    1. [Custom interfaces](#custom-interfaces)
+    1. [Overall software architecture logic](#overall-software-architecture-logic)
+    2. [EEPROM layout](#eeprom-layout)
+    3. [Custom interfaces](#custom-interfaces)
 5. [User guide](#user-guide)
 6. [Credit](#credit)
 
@@ -71,6 +73,8 @@ Some details on 9g related software are provided in respective section.
 ### External hardware architecture
 
 ## Software architecture
+
+### Overall software architecture logic
 
 ### EEPROM layout
 
