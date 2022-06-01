@@ -72,6 +72,25 @@ Some details on 9g related software are provided in respective section.
 
 ## Software architecture
 
+### EEPROM layout
+
+Basic device information (timestamps) as well as measurements are stored in EEPROM with periodicity described above.<br>
+This allows for quick and persistent access to main information available on the platform.
+
+| Address | Name                   | Description                                             |  
+|---------|------------------------|---------------------------------------------------------|
+| 0x0000  | EEPROM_WRITE_ADDR_MSB  | Next write address where the measurement will be stored |
+| 0x0001  | EEPROM_WRITE_ADDR_LSB  |                                                         |
+| 0x0002  | EEPROM_INFO_ADDR_MSB   | Stores UNIX timestamp that was saved to the device      |
+| 0x0003  | EEPROM_INFO_ADDR       |                                                         |
+| 0x0004  | EEPROM_INFO_ADDR       |                                                         |
+| 0x0005  | EEPROM_INFO_ADDR_LSB   |                                                         |
+| 0x0006  | EEPROM_DATA_START_ADDR | Measurements are stored starting from this address      |
+
+Rest of the data is reserved for measurements.<br>
+Size of one measurement pack stored in EEPROM is the size of `packed_samples` structure.<br>
+More information about EEPROM handling is provided in **custom interfaces** section.
+
 ### Custom interfaces
 
 ## User guide
