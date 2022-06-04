@@ -1,17 +1,25 @@
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
+ * @author  Pavel Arefyev
+ * @name    I2C interface abstraction
+ * @company Metropolia University of Applied Sciences
+ * @date    14.05.2022
  *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * Simple interface for interacting with I2C bus.
+ * This interface only allows to read one byte from specified slave->register
+ *
+ * The communication template:
+ * S | SLAVEADDR | W | REGADDR | ACK | RS | R | DATA | NAK | ST
  *
  * ========================================
 */
 
 #include "i2c_driver.h"
 
+/*
+ * @bried Initialize dependencies needed for I2C abstraction.
+ * This includes I2C hardware.
+ */
 void initialize_i2c()
 {
     I2C_Start();   

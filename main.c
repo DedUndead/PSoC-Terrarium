@@ -10,6 +10,9 @@
 *
 * Project idea is an intellectual property of Antti Piironen, Principal Lecturer in Smart Systems Engineering.
 * Metropolia University of Applied Sciences, Finland, Uusimaa
+* Note there are desing de  viations comparing to original description.
+* All logic is properely described in documentation linked above.
+* Refer to it for any clarifications in design.
 *
 *******************************************************************************/
 
@@ -20,6 +23,7 @@
 
 /* Custom includes */
 #include "hatch.h"
+#include "heater.h"
 #include "temperature_soil.h"
 #include "moisture_sensor.h"
 #include "i2c_driver.h"
@@ -135,7 +139,7 @@ int main()
     int air_temperature = 0;
     int soil_moisture   = 0;
     packed_samples measurements;
-    
+
     /* Initialize filters as empty */
     AverageFilter       adc_moist_filter    = { ADC_FILTER_LENGTH, 0, 0 };
     /* Moving average filters are used for data logging */
@@ -164,8 +168,12 @@ int main()
             air_temperature = read_i2c_data(TC74_ADDRESS, TC74_TEMP_REG);
             add_sample_to_MA_filter(&air_temp_filter, air_temperature);
             
-            sprintf(transmit_buffer, "%d%%, %d C\r\n", soil_moisture, air_temperature);
+            //sprintf(transmit_buffer, "%d%%, %d C\r\n", soil_moisture, air_temperature);
             //UART_PutString(transmit_buffer);
+            
+            /* Adjust actuators accoring to sample measurements */
+            adjust_hatch(air_temperature);
+            adjust_heater(air_temperature);
             
             ready_to_measure = false;
         }
@@ -182,7 +190,6 @@ int main()
             
             /* Save samples to EEPROM */
             save_samples_to_eeprom(measurements);
-            print_samples_from_eeprom();
             
             ready_to_save = false;
         }
