@@ -17,7 +17,8 @@ Terrarium is designed to be scalable. On top of existing platform and codebase, 
     2. [EEPROM layout](#eeprom-layout)
     3. [Custom interfaces](#custom-interfaces)
 5. [User guide](#user-guide)
-6. [Credit](#credit)
+6. [Future desing consideration](#future-design-consideration)
+7. [Credit](#credit)
 
 ## General description
 
@@ -107,7 +108,7 @@ More information about EEPROM handling is provided in **custom interfaces** sect
 
 ## User guide
 
-##
+## Future design consideration
 
 ### Credit
 
