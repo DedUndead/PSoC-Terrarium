@@ -99,6 +99,12 @@ More information about EEPROM handling is provided in **custom interfaces** sect
 
 ### Custom interfaces
 
+#### EEPROM management
+
+#### Time management
+
+#### User menu helpers
+
 ## User guide
 
 ##
