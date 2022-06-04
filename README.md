@@ -20,7 +20,7 @@ Terrarium is designed to be scalable. On top of existing platform and codebase, 
 6. [Future desing consideration](#future-design-consideration)
 7. [Credit](#credit)
 
-## General description
+# General description
 
 PSoC Terrarium provides a multisensing device solution to track the state of the environment, where the Terrarium system is placed.<br>
 The general system description with the interfaces is presented in Figure 1.<br>
@@ -33,7 +33,7 @@ The details about the interfaces, components, hardware and software architecture
 
 The prototype of Terrarium does not have a case, all the components are laid out on the breadboard. Thus, case description is not present in this documentation.
 
-## List of components
+# List of components
 
 <p>Table 1. List of components for Terrarium.</p>
 
@@ -46,40 +46,75 @@ The prototype of Terrarium does not have a case, all the components are laid out
 | LED               | Any             | N/A                                                                                                    |
 | 9g Servo          | Any             | N/A                                                                                                    |
 
-### Justification for components choice
+## Justification for components choice
 
-#### MCU - PSoC 5LP
+### MCU - PSoC 5LP
 
 Programmable System of Chip microcontrollers provide extensive functionality for quick prototyping of embedded devices. The ability to quickly map the internal hardware components in PSoC Creator allows to generate and utilize SDK through API prepared by the IDE. Widely used ARM Cortex M3 architecture makes this choice even more solid.
 
-#### Soil temperature sensors - DS18B20
+### Soil temperature sensors - DS18B20
 
 DS18B20 sensors are interfaced using OneWire bus. OneWire devices have unique IDs assigned and stored in ROM during manufacturing stage, thus solving the problem of having similar devices on one bus without a need for additional request to a manufacturer. The simplicity of hardware connections make OneWire based sensors an obvious choice when the application reqiures _up to N_ devices to be placed. One of such applications is used in the project - measuring soil temperature in different areas of terrarium. It is worth noting, that DS18B20 offers a high and configurable precision.
 
-#### Air temperature sensors - TC74
+### Air temperature sensors - TC74
 
 TC74 sensor is a simple I2C device. It cannot provide as accurate measurement as DS18B20, however, its triviality is a big bonus when measuring temperature of the air. It is not a requirement to be aware of exact air temperature and, therefore, resolution up to one centigrade is reasonable.
 
-#### Soil moisture sensor - DFRobot
+### Soil moisture sensor - DFRobot
 
 DFRobot's soil temperature sensor is an analog plug-and-play solution for measuring soil temperature. Originally designed DFRobot's extension shields, it is still a decent device to use in a prototype project including PSoC Terrarium.
 
-#### Actuators
+### Actuators
 
 In the current prototype, simple red LED and 9g servo motor are used for demonstration purposes.<br>
 Some details on 9g related software are provided in respective section.
 
-## Hardware architecture
+# Hardware architecture
 
-### Internal hardware architecture
+## Internal hardware architecture
 
-### External hardware architecture
+## External hardware architecture
 
-## Software architecture
+# Software architecture
 
-### Overall software architecture logic
+## Overall software architecture logic
 
-### EEPROM layout
+Overall software architecture is based on modularity.
+All the logic is performed inside modules, that are called based on the internal hardware timers.
+Figure 2 showcases module names and their periodicity.
+
+<p align="center"><img src="https://i.imgur.com/boOiVY4.png" alt="General system description"></p>
+<p align="center">Figure 2. Software architecture modules</p>
+
+You can view this modules controlled by the flags with similar names from the main function body.
+
+### Ready to Save
+**Responsible timer**: Timer_Save<br>
+Ready so save module obtains filtered samples from boxcar average filters.<br>
+It then creates a new samples structure and saves it to EEPROM.<br>
+
+### Minute Passed
+**Responsible timer**: Timer_DeviceClock<br>
+Minute passed module adjusts device's time by one minute.<br>
+It then saves adjusted time into EEPROM.
+
+### Ready to Measure
+**Responsible timer**: Timer_Measure<br>
+Ready to measure modules gets raw samples from the samples.<br>
+It then appends those samples to boxcar average filters.<br>
+Raw samples are used to adjust the actuators.<br>
+
+### ADC Conversion Ready
+**Responsible timer**: ADC conversion ready interrupt<br>
+This module samples voltage when ADC conversion is ready and appends it to simple average filter.<br>
+Its main responsibility is to average and filter raw ADC samples to further get accurate moisture reading in Ready to Measure module.
+
+### Handle User Input
+**Responsible timer**: None<br>
+This module constantly polls UART for presence of input.<br> 
+It then echoes back characters to UART and verifies if entered command are valid.
+
+## EEPROM layout
 
 Basic device information (timestamps) as well as measurements are stored in EEPROM with periodicity described above.<br>
 This allows for quick and persistent access to main information available on the platform.
@@ -98,17 +133,17 @@ Rest of the data is reserved for measurements.<br>
 Size of one measurement pack stored in EEPROM is the size of `packed_samples` structure.<br>
 More information about EEPROM handling is provided in **custom interfaces** section.
 
-### Custom interfaces
+## Custom interfaces
 
-#### EEPROM management
+### EEPROM management
 
-#### Time management
+### Time management
 
-#### User menu helpers
+### User menu helpers
 
-## User guide
+# User guide
 
-## Future design consideration
+# Future design consideration
 
 ### Credit
 
