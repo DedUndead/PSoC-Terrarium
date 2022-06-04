@@ -28,7 +28,7 @@ The general system description with the interfaces is presented in Figure 1.<br>
 <p align="center"><img src="https://i.imgur.com/mARAkWj.png" alt="General system description"></p>
 <p align="center">Figure 1. General system description</p>
 
-The system is equipped with four three sensor for different purposes, soil moisture sensor, UART interface for user interactions as well as LED indicator and 9g servo m otor, that represents hatch.
+The system is equipped with four sensor for different purposes, soil moisture sensor, UART interface for user interactions as well as LED indicator and 9g servo m otor, that represents hatch.
 The details about the interfaces, components, hardware and software architectures are discussed in later sections.
 
 The prototype of Terrarium does not have a case, all the components are laid out on the breadboard. Thus, case description is not present in this documentation.
