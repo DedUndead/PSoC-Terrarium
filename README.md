@@ -2,6 +2,8 @@
 
 Despite terrarium, greenhouse and plant growing automation projects are overhyped, this little development is meant for the exploration of Programmable System on Chip capabilities. As long as my portfolio consists of Embedded projects that inherit classical principles of emb-dev, this work is focused on showing the flexibility of PSoC microcontrollers, which will be described well enough in the documentation below.
 
+Terrarium is designed to be scalable. On top of existing platform and codebase, many additional sensors and actuators can be added without altering the core API.
+
 #### Table of contents
 
 1. [General description](#general-description)
