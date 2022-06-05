@@ -1,11 +1,18 @@
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
+ * @author  Pavel Arefyev
+ * @name    Temperature sensors interface abstraction
+ * @company Metropolia University of Applied Sciences
+ * @date    26.05.2022
  *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * This abstraction is built on top of OneWire interface.
+ * It is meant for DS18B20 temperature sensor devices, however, it can smoothly
+ * operate with any OneWire enabled devices added to the bus.
+ * Datasheet: https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf
+ *
+ * During initialization, all the sensor found on the bus are stored in
+ * devices_on_bus structure that is later accessed by public interface functions.
+ * To alter number of sensor present on OneWire bus, change NUMBER_OF_SOIL_TEMP_SENSORS parameter.
  *
  * ========================================
 */
@@ -16,11 +23,11 @@
     
 #include "onewire.h"
     
-#define NUMBER_OF_SENSORS   2
+#define NUMBER_OF_SOIL_TEMP_SENSORS 2
 
 /* Structures and types */
 typedef struct slaves_information {
-    uint64_t rom_codes[NUMBER_OF_SENSORS];
+    uint64_t rom_codes[NUMBER_OF_SOIL_TEMP_SENSORS];
 } slaves_info;
 
 /* Function declarations */

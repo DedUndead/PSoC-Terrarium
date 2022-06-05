@@ -32,14 +32,14 @@
 /* Moving average filter. 
    Length of the window is defined by FILTER_LENGTH */
 typedef struct MovingAverageFilter {
-    int16  samples_window[FILTER_LENGTH];  // Filter window
-    int16  sum;                            // Current sum of the samples in the filter
+    float  samples_window[FILTER_LENGTH];  // Filter window
+    float  sum;                            // Current sum of the samples in the filter
     uint32 raw_sample_number;              // Number of samples that went through the filter
 } MovingAverageFilter;
 
 /* Function declarations */
-void  add_sample_to_MA_filter(MovingAverageFilter* filter, const int16 sample);
-int16 get_MA_filtered_result(MovingAverageFilter* filter);
+void  add_sample_to_MA_filter(MovingAverageFilter* filter, const float sample);
+float get_MA_filtered_result(MovingAverageFilter* filter);
 
  
 #endif

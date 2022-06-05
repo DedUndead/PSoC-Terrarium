@@ -52,14 +52,15 @@ typedef struct msr_packed {
     uint32 timestamp;
     int16  air_temperature;
     int16  soil_moisture;
-    float  soil_temperature;  
+    float  soil_temperature[NUMBER_OF_SOIL_TEMP_SENSORS];
 } packed_samples;
 
 /* Global variables */
-uint8 static volatile adc_conversion_ready = false;
-uint8 static volatile ready_to_measure     = false;
-uint8 static volatile ready_to_save        = false;
-uint8 static volatile minute_passed        = false;
+uint8 static volatile adc_conversion_ready  = false;
+uint8 static volatile ready_to_measure      = false;
+uint8 static volatile ready_to_save         = false;
+uint8 static volatile minute_passed         = false;
+uint8 static volatile ds18b20_sample_ready  = false;
 
 /* Interrupt handlers */
 CY_ISR(isr_ADC_conversion)
@@ -68,37 +69,51 @@ CY_ISR(isr_ADC_conversion)
     adc_conversion_ready = true;
 }
 
+// Ready to measure module timer
 CY_ISR(isr_Timer_measure)
 {
     Timer_Measure_ReadStatusRegister(); // Acknowledge interrupt
     ready_to_measure = true;
 }
 
+// Ready to save module timer
 CY_ISR(isr_Timer_save)
 {
     Timer_Save_ReadStatusRegister(); // Acknowledge interrupt
     ready_to_save = true;
 }
 
+// Device time tracking
 CY_ISR(isr_Timer_DeviceClock)
 {
     Timer_DeviceClock_ReadStatusRegister(); // Acknowledge interrupt
     minute_passed = true;
 }
 
+// Oneshot OneWire timer interrupt to track end of conversion
+CY_ISR(isr_OneWire_sample)
+{
+    Timer_OneWire_ReadStatusRegister(); // Acknowledge interrupt
+    ds18b20_sample_ready = true;
+}
+
 /* Function declarations */
+/* EEPROM */
 void   save_samples_to_eeprom(packed_samples samples);
 uint16 print_samples_from_eeprom();
-void   print_sample(packed_samples* sample);
 void   init_eeprom_layout();
 void   erase_samples_from_eeprom();
-void   print_help();
 uint8  set_date(uint day, uint month, uint year);
 uint8  set_time(uint hour, uint minute);
 struct tm get_time_from_eeprom();
-void   print_current_time();
 void   save_time_to_eeprom(uint32 timestamp);
 uint32 get_time_from_eeprom_unix();
+/* Menu helpers */
+void   print_sample(packed_samples* sample);
+void   print_current_time();
+void   print_help();
+/* Other */
+void   Timer_OneWire_Restart();
 
 /* ==================== */
 /*  MAIN FUNCTION BODY  */
@@ -122,6 +137,7 @@ int main()
     isr_Timer_Measure_StartEx(isr_Timer_measure); 
     isr_Timer_Save_StartEx(isr_Timer_save);
     isr_Timer_DeviceClock_StartEx(isr_Timer_DeviceClock);
+    isr_OneWire_StartEx(isr_OneWire_sample);
     
     /* Start abstract hardware components */
     inititialize_hatch();
@@ -138,6 +154,8 @@ int main()
     
     int air_temperature = 0;
     int soil_moisture   = 0;
+    uint8 ds18b20_ready_to_convert = true;  // Flag indicating whether conversion should be started
+    float onewire_samples[NUMBER_OF_SOIL_TEMP_SENSORS] = { 0 };
     packed_samples measurements;
 
     /* Initialize filters as empty */
@@ -145,6 +163,9 @@ int main()
     /* Moving average filters are used for data logging */
     MovingAverageFilter soil_moisute_filter = { {0}, 0, 0 };
     MovingAverageFilter air_temp_filter     = { {0}, 0, 0 };
+    MovingAverageFilter soil_temperature_filter[NUMBER_OF_SOIL_TEMP_SENSORS] = { 
+        { {0}, 0, 0 }, { {0}, 0, 0 }
+    };
     
     print_help();  // Print user help information 
     while (true) {
@@ -158,6 +179,31 @@ int main()
             adc_conversion_ready = false;
         }
         
+        /* Initiate conversion on DS18b20 sensors */
+        if (ds18b20_ready_to_convert) {
+            /* Command conversion for all sesnors */
+            for (uint8 i = 0; i < NUMBER_OF_SOIL_TEMP_SENSORS; i++) {
+                start_conversion_soil_temp_sensor(i);
+            }        
+            /* Run one shot timer to wait for the conversion */
+            Timer_OneWire_Restart();
+            Timer_OneWire_Start();
+            
+            ds18b20_ready_to_convert = false;
+        }
+        
+        /* Collect raw samples from DS18b20 sensors */
+        if (ds18b20_sample_ready) {
+            /* Get samples from all sensors */
+            for (uint8 i = 0; i < NUMBER_OF_SOIL_TEMP_SENSORS; i++) {
+                onewire_samples[i] = get_soil_temperature(i);
+            }
+            
+            /* Update flags to trigger next conversion */
+            ds18b20_sample_ready     = false;
+            ds18b20_ready_to_convert = true;
+        }
+        
         /* Ready to measure, update sensor values */
         if (ready_to_measure) {
             // Update soil moisture and save to moving average filter
@@ -168,8 +214,10 @@ int main()
             air_temperature = read_i2c_data(TC74_ADDRESS, TC74_TEMP_REG);
             add_sample_to_MA_filter(&air_temp_filter, air_temperature);
             
-            //sprintf(transmit_buffer, "%d%%, %d C\r\n", soil_moisture, air_temperature);
-            //UART_PutString(transmit_buffer);
+            // Save soild temperature to moving average filter for all sensors
+            for (uint8 i = 0; i < NUMBER_OF_SOIL_TEMP_SENSORS; i++) {
+                add_sample_to_MA_filter(&soil_temperature_filter[i], onewire_samples[i]);
+            }
             
             /* Adjust actuators accoring to sample measurements */
             adjust_hatch(air_temperature);
@@ -186,7 +234,9 @@ int main()
             /* Filter collected samples using box average */
             measurements.air_temperature = get_MA_filtered_result(&air_temp_filter);
             measurements.soil_moisture = get_MA_filtered_result(&soil_moisute_filter);
-            measurements.soil_temperature = 0;
+            for (int i = 0; i < NUMBER_OF_SOIL_TEMP_SENSORS; i++) {
+                measurements.soil_temperature[i] = get_MA_filtered_result(&soil_temperature_filter[i]);   
+            }
             
             /* Save samples to EEPROM */
             save_samples_to_eeprom(measurements);
@@ -363,6 +413,10 @@ void save_time_to_eeprom(uint32 timestamp)
     }
 }
 
+/*
+ * @brief Initialize EEPROM layout.
+ * This will check the validity of layout and fix if required.
+ */
 void init_eeprom_layout()
 {
     /* Obtain next writing address */
@@ -447,26 +501,37 @@ uint16 print_samples_from_eeprom()
  */
 void print_sample(packed_samples* sample)
 {
-    char transmit_buffer[DEF_BUFFER_LENGTH * 3];
+    char transmit_buffer[DEF_BUFFER_LENGTH * 4];
     
     struct tm dtime;
     time_t ts = (time_t)(sample->timestamp);
     (void)localtime_r(&ts, &dtime);  // Breakdown unix timestamp
     
-    sprintf(
+    /* Construct first part of string */
+    int idx = sprintf(
         transmit_buffer,
         "{\r\n"
-        "\tDate:   %02d.%02d.%d %02d:%02d\r\n"
-        "\tTair:   %d dC\r\n"
-        "\tTsoil:  %.4f dC\r\n"
-        "\tHsoild  %d %%\r\n"
-        "}\r\n",
+        "\tDate:     %02d.%02d.%d %02d:%02d\r\n"
+        "\tTair:     %d dC\r\n"
+        "\tHsoil:    %d %%\r\n",
         dtime.tm_mday, dtime.tm_mon + 1, dtime.tm_year + 1900,
         dtime.tm_hour, dtime.tm_min,
         sample->air_temperature,
-        sample->soil_temperature,
         sample->soil_moisture
     );
+    
+    /* Construct second part of string that includes soil temperature for each sensor */
+    for (int i = 0; i < NUMBER_OF_SOIL_TEMP_SENSORS; i++) {
+        idx += sprintf(
+            &transmit_buffer[idx],
+            "\tTsoil[%d]: %.4f dC\r\n",
+            i,
+            sample->soil_temperature[i]
+        );
+    }
+    
+    /* Terminate JSON payload */
+    sprintf(&transmit_buffer[idx], "}\r\n");
     
     UART_PutString(transmit_buffer);
 }
@@ -486,4 +551,14 @@ void print_help()
         "D            - Print current device time\n\r"
         "\r\n"
     );   
+}
+
+/*
+ * @brief Initiate pulse from control register to restart OneShot timer
+ */
+void Timer_OneWire_Restart()
+{
+    Control_OneWire_Timer_Reset_Write(0x01);
+    CyDelay(1);
+    Control_OneWire_Timer_Reset_Write(0x00);
 }

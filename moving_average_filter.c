@@ -28,7 +28,7 @@
  * @param filter Pointer to target filter
  * @param sample New sample
  */
-void add_sample_to_MA_filter(MovingAverageFilter* filter, const int16 sample)
+void add_sample_to_MA_filter(MovingAverageFilter* filter, const float sample)
 {
     // Determine the index for the current replacement in window
     uint8 index = filter->raw_sample_number % FILTER_LENGTH;
@@ -45,7 +45,7 @@ void add_sample_to_MA_filter(MovingAverageFilter* filter, const int16 sample)
  * Contains integer rounding errors.
  * @param filter Pointer to target filter
  */
-int16 get_MA_filtered_result(MovingAverageFilter* filter)
+float get_MA_filtered_result(MovingAverageFilter* filter)
 {
     // Note: There is no need to make this a critical section
     // because all the interrupts deffer calculations to main
@@ -59,7 +59,7 @@ int16 get_MA_filtered_result(MovingAverageFilter* filter)
     // Sliding window is not yet filled or samples number overflowed
     else {
         /* Calculate temporary sum based on already collected elements */
-        int temporary_sum = 0;
+        float temporary_sum = 0;
         for (uint8 i = 0; i < filter->raw_sample_number; i++) {
             temporary_sum += filter->samples_window[i];
         }

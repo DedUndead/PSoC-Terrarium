@@ -1,11 +1,18 @@
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
+ * @author  Pavel Arefyev
+ * @name    Temperature sensors interface abstraction
+ * @company Metropolia University of Applied Sciences
+ * @date    26.05.2022
  *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * This abstraction is built on top of OneWire interface.
+ * It is meant for DS18B20 temperature sensor devices, however, it can smoothly
+ * operate with any OneWire enabled devices added to the bus.
+ * Datasheet: https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf
+ *
+ * During initialization, all the sensor found on the bus are stored in
+ * devices_on_bus structure that is later accessed by public interface functions.
+ * To alter number of sensor present on OneWire bus, change NUMBER_OF_SOIL_TEMP_SENSORS parameter.
  *
  * ========================================
 */
@@ -25,7 +32,7 @@ void initialize_soil_temp_sensors()
     /* Read devices' ROM codes */
     /* After initialization ROM codes can be accessed from devices_on_bus in private interface */
     onewire_first(&devices_on_bus.rom_codes[0]);
-    for (uint8_t i = 1; i < NUMBER_OF_SENSORS; i++) {
+    for (uint8_t i = 1; i < NUMBER_OF_SOIL_TEMP_SENSORS; i++) {
         onewire_next(&devices_on_bus.rom_codes[i]);    
     }
 }
@@ -37,6 +44,9 @@ void initialize_soil_temp_sensors()
  */
 float get_soil_temperature(uint8 sensor_index)
 {
+    // Sanity check
+    if (sensor_index > NUMBER_OF_SOIL_TEMP_SENSORS - 1) return 0;
+    
     set_speed();
     
     // Detect presence
