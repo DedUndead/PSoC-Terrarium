@@ -322,7 +322,7 @@ As mentioned, the codebase allows flexibility in design choices.<br>
 If you would like to replace any of the existing components with the alternative, some configuration tweaking is required (I2C address, for instance) but it is simple and effective.
 
 Follow these steps in order to set up your PSoC Terrarium:
-1. Clone repository and open it as PSoC 4.4 project. 
+1. Clone repository and rename the root folder to **psoc_project.cydsn** or download source from [Drive](https://drive.google.com/file/d/17nfClusA1car1u5MrSCX8ocyo4IAia4A/view?usp=sharing). 
 2. Connect all the components required according to hardware schematics. If you would like to expand OneWire bus by adding more temperature sensors (unlimited), change **NUMBER_OF_SOIL_TEMP_SENSORS** configuration in temperature_soil.h to match your set up. 
 3. Tweak any other configuration if required (review Custom interfaces section).
 4. Connect PSoC and program your device in the IDE.
