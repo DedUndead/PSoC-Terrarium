@@ -239,8 +239,7 @@ Hatch opens for 20% after each centigrade above HATCH_OPEN_TEMP_C.
 | **void** adjust_hatch       | **int16** temperature | Adjust hatch actuator according to **temperature** |
 
 ### Average filter
-**Files**: average_filter
-
+**Files**: average_filter<br>
 This file provides basic interface for the simplest filter: average filter.
 The samples are saved to the running sum and the filtered result is an average of saved samples.
 
@@ -253,7 +252,7 @@ The filter clears running sum once **.filter_length** is reached.
 | **int** get_filtered_result   | **AverageFilter\*** filter                           | Get filtered result (average) of the current samples collected |
 
 ### Moving average (boxcar) filter
-**Files**: moving_average_filter
+**Files**: moving_average_filter<br>
 Moving Average Filter is a simple interface for quick calculations and saving of samples to sliding window. 
 This interface relies on a structure with a sliding window. Details can be viewed from the source code.
 
@@ -270,11 +269,47 @@ Consider the size of PSoC heap when adjusting the size of the sliding window. Sl
 | **int** get_MA_filtered_result   | **MovingAverageFilter\*** filter                           | Get filtered result (average) of the current samples collected |
 
 ### EEPROM interface
-**Files**: main
+**Files**: main<br>
 EEPROM interface provides API to communicate with EEPROM on the device. It is created according to EEPROM layout described in the respective section.<br>
 When clearing memory, it is enough to reset next writing address. The layout therefore allows to extend EEPROM lifetime by saving amount of operations and boost performance by simplifying clearing operation to a single internal API call. Refer to the source code to see details.
 
+When saving samples to the memory, samples should be packed into **packed_samples** structure. This way, EEPROM is utilized byte-to-byte without missing any space.
+
+| Function                             | Parameters                                  | Description                                                    |  
+|--------------------------------------|---------------------------------------------|----------------------------------------------------------------|
+| **void** save_samples_to_eeprom      | **packed_samples** samples                  | Save **samples** to EEPROM next writing address                |
+| **uint16** print_samples_from_eeprom |                                             | Print add **samples** stored in EEPROM                         |
+| **void** init_eeprom_layout          |                                             | Perform validity of EEPROM layout                              |
+| **void** erase_samples_from_eeprom   |                                             | Erase samples by resetting next write address                  |
+| **uint8** set_date                   | **uint** day, **uint** month, **uint** year | Set date, store new timestamp to EEPROM                        |
+| **uint8** set_time                   | **uint** hour, **uint** minute              | Set time, store new timestamp to EEPROM                        |
+| **struct tm** get_time_from_eeprom   |                                             | Get timestamp from EEPROM in a form of time.tm structure       |
+| **void** save_time_to_eeprom         | **uint32** timestamp                        | Save new **UNIX** timestamp to EEPROM                          |
+| **uint32** get_time_from_eeprom_unix |                                             | Get timestamp from EEPROM in a form of UNIX timestamp          |
+
+When EEPROM is filler, the writing address is reset and the samples are abandoned. Thus, consider saving valuable information regularly with a client-side script.
+
+Time is tracked using the hardware timer and standard C libraries (time). It adjusts the timestamp every minute and stores in UNIX form in EEPROM.
+
 ### User menu helpers
+**Files**: main<br>
+These functions are used to print text to UART.
+
+| Configuration      | Description                                                      | 
+|--------------------|------------------------------------------------------------------|
+| DEVICE_INFO_PROMPT | Information prompt that will be printed when ? command is issued |
+
+If you are altering this project, DEVICE_INFO_PROMPT must contain original developer's name: **Pavel Arefyev**.
+
+| Function                             | Parameters                  | Description                                      |  
+|--------------------------------------|-----------------------------|--------------------------------------------------|
+| **void** print_sample                | **packed_samples\*** sample | Print measurement stored in **sample** structure |
+| **void** print_current_time          |                             | Print current time on the device                 |
+| **void** print_help                  |                             | Print user help information                      |
+
+### Private interfaces
+**Files**: onewire<br>
+Private interfaces are considered lower-level API in the project. No information about configuration will be present in documentation. Therefore, refer to source files mentioned above.
 
 # User guide
 
