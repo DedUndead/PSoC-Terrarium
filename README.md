@@ -150,7 +150,7 @@ Follow these steps in order to set up your PSoC Terrarium:
 3. Tweak any other configuration if required (review Custom interfaces section).
 4. Connect PSoC and program your device in the IDE.
 5. Open terminal for serial connection with 57600 baudrate.
-6. If you have changed NUMBER_OF_SOIL_TEMP_SESORS configuration, **clear** device memory first by issuing "C" command to the terminal.
+6. If you have changed NUMBER_OF_SOIL_TEMP_SENSORS configuration, **clear** device memory first by issuing **"C"** command to the terminal.
 
 Now the device is fully operational. Figure 3 showcases menu help interface.
 
