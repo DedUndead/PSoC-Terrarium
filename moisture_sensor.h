@@ -12,7 +12,7 @@
  * The analog input emulates Arduino's ADC converter because the sensor was originally
  * developed for Arduino UNO and DFRobot's shield.
  *
- * There is no transfer function for the sensor, thus, the oisture is obtained by
+ * There is no transfer function for the sensor, thus, the moisture is obtained by
  * performing linear mapping from ADC range to percentage.
  *
  * NOTE: Moisture sensor required calibration.

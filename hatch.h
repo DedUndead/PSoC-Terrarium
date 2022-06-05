@@ -1,11 +1,12 @@
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
+ * @author  Pavel Arefyev
+ * @name    Hatch simulator interface
+ * @company Metropolia University of Applied Sciences
+ * @date    14.05.2022
  *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * This interface provides an adjustment functions for hatch simulator.
+ * In this demo project, 9g servo is used as a simulator.
  *
  * ========================================
 */

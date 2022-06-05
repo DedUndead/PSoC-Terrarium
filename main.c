@@ -32,11 +32,11 @@
 
 #define false             0
 #define true              1
-#define DEF_BUFFER_LENGTH 50       // Maximum length of transmit buffer
+#define DEF_BUFFER_LENGTH 50     // Maximum length of transmit buffer
 #define ADC_FILTER_LENGTH 100000
 
-#define TC74_ADDRESS      0x4a     // I2C address of TC74 sensor
-#define TC74_TEMP_REG     0x00     // Temperature register of the sensor
+#define TC74_ADDRESS      0x4a   // I2C address of TC74 sensor
+#define TC74_TEMP_REG     0x00   // Temperature register of the sensor
 
 /* Refer to memory layout for more information */
 #define EEPROM_WRITE_ADDR_MSB   0x00
@@ -147,7 +147,6 @@ int main()
     init_eeprom_layout();
 
     /* main Variable block */
-    char transmit_buffer[DEF_BUFFER_LENGTH];
     char receive_buffer[DEF_BUFFER_LENGTH];
     uint8 rx_index = 0;  // Index that points to next write index in rx buffer
     uint8 input;         // User input

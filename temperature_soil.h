@@ -1,7 +1,7 @@
 /* ========================================
  *
  * @author  Pavel Arefyev
- * @name    Temperature sensors interface abstraction
+ * @name    Soil temperature sensors interface abstraction
  * @company Metropolia University of Applied Sciences
  * @date    26.05.2022
  *
