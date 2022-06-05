@@ -278,7 +278,7 @@ When saving samples to the memory, samples should be packed into **packed_sample
 | Function                             | Parameters                                  | Description                                                    |  
 |--------------------------------------|---------------------------------------------|----------------------------------------------------------------|
 | **void** save_samples_to_eeprom      | **packed_samples** samples                  | Save **samples** to EEPROM next writing address                |
-| **uint16** print_samples_from_eeprom |                                             | Print add **samples** stored in EEPROM                         |
+| **uint16** print_samples_from_eeprom |                                             | Print **samples** stored in EEPROM                             |
 | **void** init_eeprom_layout          |                                             | Perform validity of EEPROM layout                              |
 | **void** erase_samples_from_eeprom   |                                             | Erase samples by resetting next write address                  |
 | **uint8** set_date                   | **uint** day, **uint** month, **uint** year | Set date, store new timestamp to EEPROM                        |
