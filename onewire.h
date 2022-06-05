@@ -32,13 +32,6 @@
     
 #define DEVICES_ON_BUS      2
     
-/* Global variables */
-unsigned char ROM_NO[8];
-int LastDiscrepancy;
-int LastFamilyDiscrepancy;
-int LastDeviceFlag;
-unsigned char crc8;
-    
 /* Functions declarations */
 /* Basic */
 void  set_speed();

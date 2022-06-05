@@ -5,7 +5,8 @@
  * @date    26.04.2022
  *
  * Interface to access OneWire. Partially adopted from Maxim Integrated.
- * URL: https://www.maximintegrated.com/en/design/technical-documents/app-notes/1/126.html
+ * URL: https://www.maximintegrated.com/en/design/technical-documents/app-notes/1/126.html [Main logic]
+ * URL: https://www.maximintegrated.com/en/design/technical-documents/app-notes/1/187.html [Search logic]
  *
  * ========================================
  */
@@ -18,6 +19,13 @@
 
 /* Keep timings static to avoid namespace polution */
 static int A, B, C, D, E, F, G, H, I, J;
+
+/* Search algorithm globals */
+static unsigned char ROM_NO[8];
+static int LastDiscrepancy;
+static int LastFamilyDiscrepancy;
+static int LastDeviceFlag;
+static unsigned char crc8;
 
 // One tick is 0.25 us according to standards
 static void tick_delay(int ticks)
@@ -44,7 +52,7 @@ void set_speed()
     F = 55 * 4;
     G = 0;
     H = 480 * 4;
-    I = 70 * 4; /* Pretty weird. Had to increase the time to get the response from slave */
+    I = 200 * 4;
     J = 410 * 4;
 }
 

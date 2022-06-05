@@ -126,7 +126,7 @@ int main()
     /* Start abstract hardware components */
     inititialize_hatch();
     initialize_soil_moisture_sensor();
-    //initialize_soil_temp_sensors();
+    initialize_soil_temp_sensors();
     initialize_i2c();
     init_eeprom_layout();
 

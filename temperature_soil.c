@@ -20,9 +20,12 @@ static slaves_info devices_on_bus = { .rom_codes = { 0 } };
  */
 void initialize_soil_temp_sensors()
 {
+    set_speed();
+    
     /* Read devices' ROM codes */
+    /* After initialization ROM codes can be accessed from devices_on_bus in private interface */
     onewire_first(&devices_on_bus.rom_codes[0]);
-    for (uint8_t i = i; i < NUMBER_OF_SENSORS; i++) {
+    for (uint8_t i = 1; i < NUMBER_OF_SENSORS; i++) {
         onewire_next(&devices_on_bus.rom_codes[i]);    
     }
 }
@@ -34,7 +37,7 @@ void initialize_soil_temp_sensors()
  */
 float get_soil_temperature(uint8 sensor_index)
 {
-    set_speed(STANDARD);
+    set_speed();
     
     // Detect presence
     if (onewire_touch_reset()) return 0;
@@ -75,7 +78,7 @@ float get_soil_temperature(uint8 sensor_index)
  */
 void start_conversion_soil_temp_sensor(uint8 sensor_index)
 {
-    set_speed(STANDARD);
+    set_speed();
     
     // Detect presence
     if (onewire_touch_reset()) return;
