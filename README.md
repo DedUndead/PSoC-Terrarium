@@ -73,6 +73,17 @@ Some details on 9g related software are provided in respective section.
 
 ## Internal hardware architecture
 
+"Internal hardware" refers to the PSoC Creator hardware modules that are used to generate an SDK for the project.<br>
+Overall design is presented in Figure 2.
+
+<p align="center"><img src="https://i.imgur.com/aUdpNXd.png" alt="General system description"></p>
+<p align="center">Figure 2. PSoC hardware modules design</p>
+
+**Interfaces** section includes all main interfaces that are used for communication in the environmant: UART, I2C, ADC, OneWire.<br>
+**Memory** section includes EEPROM component.<br>
+**Actuators related HW** includes means of interacting with the actuators: PWM, GPIO.<br>
+**Timers** section includes all the timers that are used for controlling the software flow. It is described in details in Overall Software Architecture chapter.
+
 ## External hardware architecture
 
 # Software architecture
@@ -81,10 +92,10 @@ Some details on 9g related software are provided in respective section.
 
 Overall software architecture is based on modularity.
 All the logic is performed inside modules, that are called based on the internal hardware timers.
-Figure 2 showcases module names and their periodicity.
+Figure 3 showcases module names and their periodicity.
 
-<p align="center"><img src="https://i.imgur.com/boOiVY4.png" alt="General system description"></p>
-<p align="center">Figure 2. Software architecture modules</p>
+<p align="center"><img src="https://i.imgur.com/DzGZtyc.png" alt="General system description"></p>
+<p align="center">Figure 3. Software architecture modules</p>
 
 You can view this modules controlled by the flags with similar names from the main function body.
 
@@ -103,6 +114,12 @@ It then saves adjusted time into EEPROM.
 Ready to measure modules gets raw samples from the samples.<br>
 It then appends those samples to boxcar average filters.<br>
 Raw samples are used to adjust the actuators.<br>
+
+### DS18B20 modules
+**Responsible timer**: Timer_OneWire<br>
+**DS18B20_Ready_To_Convert** starts in the beginning of the execution.<br>
+It issues convert command for all OneWire enabled sensors and then starts OneShot Timer that will interrupt after 800 ms to start **DS18B20_Sample_Ready** module.<br>
+The following module will then update OneWire samples that will be accessed in Ready to Measure module.
 
 ### ADC Conversion Ready
 **Responsible timer**: ADC conversion ready interrupt<br>
@@ -152,21 +169,30 @@ Follow these steps in order to set up your PSoC Terrarium:
 5. Open terminal for serial connection with 57600 baudrate.
 6. If you have changed NUMBER_OF_SOIL_TEMP_SENSORS configuration, **clear** device memory first by issuing **"C"** command to the terminal.
 
-Now the device is fully operational. Figure 3 showcases menu help interface.
+Now the device is fully operational. Figure 4 showcases menu help interface.
 
 <p align="center"><img src="https://i.imgur.com/hJmz6ME.png" alt="General system description"></p>
-<p align="center">Figure 3. User terminal</p>
+<p align="center">Figure 4. User terminal</p>
 
 After each successful or unsuccessful opeartion all the options will be displayed on the screen again.
 
 **Tsoil\[index\]** represents temperature of the soil measured by OneWire based sensor number **index**.
 It will automatically adjust the printing according to your OneWire bus setup.
 
-<p align="center"><img src="https://i.imgur.com/cnsz5oz.png" alt="General system description"></p>
-<p align="center">Figure 4. "A" command output example.</p>
+<p align="center"><img src="https://i.imgur.com/Dzim1VJ.png" alt="General system description"></p>
+<p align="center">Figure 5. "A" command output example.</p>
 
 # Future design consideration
 
-### Credit
+This section briefly describes issues that could be addressed in future development.
+
+### External memory
+Samples should be additionally stored on external SD card. The alternative and much better solution is to save samples to cloud, where they could be analyzed well later.
+
+### Device time tracking
+To make time tracking more accurate, device could be synced with the real-time servers or use external RTC.<br>
+However, it poses redesign issues regarding date and time user configuration. Perhaps, if those options should be kept, usage of standard libraries and hardware timers is sufficient. 
+
+# Credit
 
 Prepared for Metropolia University of Applied Science's "Programmable System on Chip Design" course conducted by Antti Piironen, Principal Lecturer in Smart Systems Engineering.
