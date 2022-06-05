@@ -25,7 +25,7 @@ Terrarium is designed to be scalable. On top of existing platform and codebase, 
 PSoC Terrarium provides a multisensing device solution to track the state of the environment, where the Terrarium system is placed.<br>
 The general system description with the interfaces is presented in Figure 1.<br>
 
-<p align="center"><img src="https://i.imgur.com/mARAkWj.png" alt="General system description"></p>
+<p align="center"><img src="https://i.imgur.com/lSghwnF.png" alt="General system description"></p>
 <p align="center">Figure 1. General system description</p>
 
 The system is equipped with four sensor for different purposes, soil moisture sensor, UART interface for user interactions as well as LED indicator and 9g servo m otor, that represents hatch.
@@ -34,8 +34,6 @@ The details about the interfaces, components, hardware and software architecture
 The prototype of Terrarium does not have a case, all the components are laid out on the breadboard. Thus, case description is not present in this documentation.
 
 # List of components
-
-<p>Table 1. List of components for Terrarium.</p>
 
 | Component         | Name            | Datasheet                                                                                              |  
 |-------------------|-----------------|--------------------------------------------------------------------------------------------------------|
@@ -152,7 +150,129 @@ More information about EEPROM handling is provided in **custom interfaces** sect
 
 ## Custom interfaces
 
+### Moisture sensor
+**Files**: moisture_sensor<br>
+This abstraction provides interface for handling moisture sensor. It uses analog input on the microcontroller to provide moisture reading.
+The analog input (ADC_DelSig component) emulates Arduino's ADC converter because the sensor was originally developed for Arduino UNO and DFRobot's shield.<br>
+There is no transfer function for the sensor, thus, the moisture is obtained by performing linear mapping from ADC range to percentage.<br>
+
+| Configuration  | Description                                     |  
+|----------------|-------------------------------------------------|
+| MOIST_VALUE_MV | ADC reading when the sensor is exposed to water |
+| DRY_VALUE_MV   | ADC reading when the sensor is exposed to air   |
+
+Moisture sensor requires manual calibration, thus these values are unique to every set up.
+
+| Function                                 | Parameters | Description                                          |  
+|------------------------------------------|------------|------------------------------------------------------|
+| **void** initialize_soil_moisture_sensor |            | Initialize hardware related to the abstraction (ADC) |
+| **int** get_soil_moisture                |            | Get soil moisture in percent                         |
+
+### I2C Driver
+**Files**: i2c_driver<br>
+Simple interface for interacting with I2C bus. It's not the most generic interface but it can be simply expanded using PSoC I2C API for further development.
+This interface only allows to read one byte from specified slave->register.
+
+The communication template:<br>
+S | SLAVEADDR | W | REGADDR | ACK | RS | R | DATA | NAK | ST
+
+| Configuration  | Description                                      |  
+|----------------|--------------------------------------------------|
+| I2C_ERROR      | I2C error code returned by API when error occurs |
+
+| Function                | Parameters                                           | Description                                               |  
+|-------------------------|------------------------------------------------------|-----------------------------------------------------------|
+| **void** initialize_i2c |                                                      | Initialize I2C hardware components                        |
+| **int16** read_i2c_data | **uint8** slave_address, **uint8** register_address  | Read data from slave using comm. template described above |
+
+### Soil temperature sensors
+**Files**: temperature_soil<br>
+This abstraction is built on top of OneWire interface.
+It is meant for DS18B20 temperature sensor devices, however, it can smoothly operate with any OneWire enabled devices added to the bus.
+
+During initialization, all the sensor found on the bus are stored in devices_on_bus structure that is later accessed by public interface functions.
+To alter number of sensor present on OneWire bus, change NUMBER_OF_SOIL_TEMP_SENSORS parameter.
+
+| Configuration                    | Description                                      |  
+|----------------------------------|--------------------------------------------------|
+| NUMBER_OF_SOIL_TEMP_SENSORS      | Number of soil temperature sensors on the bus    |
+
+After configuration has been changed, the Terrarium will be reorganized to print, measure and operate with different number of OneWire sensors. In order for the system to work correctly, samples saved to EEPROM must be cleared (refer to User Guide).
+
+| Function                                    | Parameters      | Description                                                             |  
+|---------------------------------------------|-----------------|-------------------------------------------------------------------------|
+| **void** initialize_soil_temp_sensors       |                 | Find all devices present on the bus and save their addressed            |
+| **float** get_soil_temperature              | **uint8** index | Issue read command for the sensor with **index** index on the bus       |
+| **float** start_conversion_soil_temp_sensor | **uint8** index | Issue conversion command for the sensor with **index** index on the bus |
+
+Technically, number of sensor on OneWire bus is unlimited. In the software, the limit is 255 (uint8 limitation). Consider also interference when having long physical bus.<br>
+This interface uses binary search algorithm to identify devices present on the bus. If requirements are time critical, consider delays during initialization when adding large amount of sensors to the bus.<br>
+Index of the sensor is determined during initialization and hidden behind the static interface. Refer to main.c to see how the API can be used in iterative manner to access all sensors on the bus.<br>
+
+### Heater
+**Files**: heater<br>
+This interface provides an adjustment functions for heater simulator. In this demo project, simple neon-red LED is used as a simulator.
+
+| Configuration     | Description                                                    |  
+|-------------------|----------------------------------------------------------------|
+| HEATER_ON_TEMP_C  | Heater is turned on when this value is reached                 |
+| HEATER_OFF_TEMP_C | Heater is turned back off once temperature is above this value |
+
+| Function               | Parameters            | Description                                         |  
+|------------------------|-----------------------|-----------------------------------------------------|
+| **void** adjust_heater | **int16** temperature | Adjust heater actuator according to **temperature** |
+
+### Hatch
+**Files**: hatch<br>
+This interface provides an adjustment functions for hatch simulator.
+In this demo project, 9g servo is used as a simulator.
+
+| Configuration      | Description                                      |  
+|--------------------|--------------------------------------------------|
+| HATCH_OPEN_TEMP_C  | When this value is reached, hatch will be opened |
+
+Hatch opens for 20% after each centigrade above HATCH_OPEN_TEMP_C.
+
+| Function                    | Parameters            | Description                                        |  
+|-----------------------------|-----------------------|----------------------------------------------------|
+| **void** inititialize_hatch |                       | Initialize related hardware components (PWM)       |
+| **void** adjust_hatch       | **int16** temperature | Adjust hatch actuator according to **temperature** |
+
+### Average filter
+**Files**: average_filter
+
+This file provides basic interface for the simplest filter: average filter.
+The samples are saved to the running sum and the filtered result is an average of saved samples.
+
+To start using the filter, AverageFilter structure must be created.<br>
+The filter clears running sum once **.filter_length** is reached.
+
+| Function                      | Parameters                                           | Description                                                    |  
+|-------------------------------|------------------------------------------------------|----------------------------------------------------------------|
+| **void** add_sample_to_filter | **AverageFilter\*** filter, **const int** new_sample | Update running sum with a new sample                           |
+| **int** get_filtered_result   | **AverageFilter\*** filter                           | Get filtered result (average) of the current samples collected |
+
+### Moving average (boxcar) filter
+**Files**: moving_average_filter
+Moving Average Filter is a simple interface for quick calculations and saving of samples to sliding window. 
+This interface relies on a structure with a sliding window. Details can be viewed from the source code.
+
+| Configuration | Description                  |  
+|---------------|------------------------------|
+| FILTER_LENGTH | Length of the sliding window |
+
+To start using the filter, AverageFilter structure must be created.<br>
+Consider the size of PSoC heap when adjusting the size of the sliding window. Sliding window of a bigger size may lead to overflow.
+
+| Function                         | Parameters                                                 | Description                                                    |  
+|----------------------------------|------------------------------------------------------------|----------------------------------------------------------------|
+| **void** add_sample_to_MA_filter | **MovingAverageFilter\*** filter, **const int** new_sample | Update sliding window with a new sample                        |
+| **int** get_MA_filtered_result   | **MovingAverageFilter\*** filter                           | Get filtered result (average) of the current samples collected |
+
 ### EEPROM interface
+**Files**: main
+EEPROM interface provides API to communicate with EEPROM on the device. It is created according to EEPROM layout described in the respective section.<br>
+When clearing memory, it is enough to reset next writing address. The layout therefore allows to extend EEPROM lifetime by saving amount of operations and boost performance by simplifying clearing operation to a single internal API call. Refer to the source code to see details.
 
 ### User menu helpers
 
@@ -192,6 +312,9 @@ Samples should be additionally stored on external SD card. The alternative and m
 ### Device time tracking
 To make time tracking more accurate, device could be synced with the real-time servers or use external RTC.<br>
 However, it poses redesign issues regarding date and time user configuration. Perhaps, if those options should be kept, usage of standard libraries and hardware timers is sufficient. 
+
+### Moisture sensor calibration function
+Calibration function could be implemented to speed up the process of environment set up. It may happen, that re-calibration is required after a certain time of using the device. Calibration function could be implemented as a part of user interface (CALIB <SENSOR_NAME>).
 
 # Credit
 
