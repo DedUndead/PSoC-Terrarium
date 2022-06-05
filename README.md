@@ -69,11 +69,6 @@ Some details on 9g related software are provided in respective section.
 
 # Hardware architecture
 
-<p align="center"><img src="https://i.imgur.com/N4sUtry.png" alt="General system description"></p>
-<p align="center">Figure 2. PSoC hardware modules design</p>
-
-Follow the link to view schematics in full resolution: https://i.imgur.com/N4sUtry.png
-
 ## Internal hardware architecture
 
 "Internal hardware" refers to the PSoC Creator hardware modules that are used to generate an SDK for the project.<br>
@@ -88,6 +83,11 @@ Overall design is presented in Figure 3.
 **Timers** section includes all the timers that are used for controlling the software flow. It is described in details in Overall Software Architecture chapter.
 
 ## External hardware architecture
+
+<p align="center"><img src="https://i.imgur.com/N4sUtry.png" alt="General system description"></p>
+<p align="center">Figure 2. External hardware architecture.</p>
+
+Follow the link to view schematics in full resolution: https://i.imgur.com/N4sUtry.png
 
 # Software architecture
 
