@@ -159,6 +159,12 @@ Now the device is fully operational. Figure 3 showcases menu help interface.
 
 After each successful or unsuccessful opeartion all the options will be displayed on the screen again.
 
+**Tsoil\[index\]** represents temperature of the soil measured by OneWire based sensor number **index**.
+It will automatically adjust the printing according to your OneWire bus setup.
+
+<p align="center"><img src="https://i.imgur.com/cnsz5oz.png" alt="General system description"></p>
+<p align="center">Figure 4. "A" command output example.</p>
+
 # Future design consideration
 
 ### Credit
