@@ -135,13 +135,29 @@ More information about EEPROM handling is provided in **custom interfaces** sect
 
 ## Custom interfaces
 
-### EEPROM management
-
-### Time management
+### EEPROM interface
 
 ### User menu helpers
 
 # User guide
+
+As mentioned, the codebase allows flexibility in design choices.<br>
+If you would like to replace any of the existing components with the alternative, some configuration tweaking is required (I2C address, for instance) but it is simple and effective.
+
+Follow these steps in order to set up your PSoC Terrarium:
+1. Clone repository and open it as PSoC 4.4 project. 
+2. Connect all the components required according to hardware schematics. If you would like to expand OneWire bus by adding more temperature sensors (unlimited), change **NUMBER_OF_SOIL_TEMP_SENSORS** configuration in temperature_soil.h to match your set up. 
+3. Tweak any other configuration if required (review Custom interfaces section).
+4. Connect PSoC and program your device in the IDE.
+5. Open terminal for serial connection with 57600 baudrate.
+6. If you have changed NUMBER_OF_SOIL_TEMP_SESORS configuration, **clear** device memory first by issuing "C" command to the terminal.
+
+Now the device is fully operational. Figure 3 showcases menu help interface.
+
+<p align="center"><img src="https://i.imgur.com/hJmz6ME.png" alt="General system description"></p>
+<p align="center">Figure 3. User terminal</p>
+
+After each successful or unsuccessful opeartion all the options will be displayed on the screen again.
 
 # Future design consideration
 
