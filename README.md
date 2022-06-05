@@ -69,13 +69,18 @@ Some details on 9g related software are provided in respective section.
 
 # Hardware architecture
 
+<p align="center"><img src="https://i.imgur.com/N4sUtry.png" alt="General system description"></p>
+<p align="center">Figure 2. PSoC hardware modules design</p>
+
+Follow the link to view schematics in full resolution: https://i.imgur.com/N4sUtry.png
+
 ## Internal hardware architecture
 
 "Internal hardware" refers to the PSoC Creator hardware modules that are used to generate an SDK for the project.<br>
-Overall design is presented in Figure 2.
+Overall design is presented in Figure 3.
 
 <p align="center"><img src="https://i.imgur.com/aUdpNXd.png" alt="General system description"></p>
-<p align="center">Figure 2. PSoC hardware modules design</p>
+<p align="center">Figure 3. PSoC hardware modules design</p>
 
 **Interfaces** section includes all main interfaces that are used for communication in the environmant: UART, I2C, ADC, OneWire.<br>
 **Memory** section includes EEPROM component.<br>
@@ -90,10 +95,10 @@ Overall design is presented in Figure 2.
 
 Overall software architecture is based on modularity.
 All the logic is performed inside modules, that are called based on the internal hardware timers.
-Figure 3 showcases module names and their periodicity.
+Figure 4 showcases module names and their periodicity.
 
 <p align="center"><img src="https://i.imgur.com/DzGZtyc.png" alt="General system description"></p>
-<p align="center">Figure 3. Software architecture modules</p>
+<p align="center">Figure 4. Software architecture modules</p>
 
 You can view this modules controlled by the flags with similar names from the main function body.
 
@@ -324,10 +329,10 @@ Follow these steps in order to set up your PSoC Terrarium:
 5. Open terminal for serial connection with 57600 baudrate.
 6. If you have changed NUMBER_OF_SOIL_TEMP_SENSORS configuration, **clear** device memory first by issuing **"C"** command to the terminal.
 
-Now the device is fully operational. Figure 4 showcases menu help interface.
+Now the device is fully operational. Figure 5 showcases menu help interface.
 
 <p align="center"><img src="https://i.imgur.com/hJmz6ME.png" alt="General system description"></p>
-<p align="center">Figure 4. User terminal</p>
+<p align="center">Figure 5. User terminal</p>
 
 After each successful or unsuccessful opeartion all the options will be displayed on the screen again.
 
@@ -335,7 +340,7 @@ After each successful or unsuccessful opeartion all the options will be displaye
 It will automatically adjust the printing according to your OneWire bus setup.
 
 <p align="center"><img src="https://i.imgur.com/Dzim1VJ.png" alt="General system description"></p>
-<p align="center">Figure 5. "A" command output example.</p>
+<p align="center">Figure 6. "A" command output example.</p>
 
 # Future design consideration
 
